@@ -7,8 +7,7 @@
         if(is_array($myusers)){
 
             foreach($myusers as $row){
-                $image = ($row->gender == "Female") ? "./images/33988c20a002ec982dc72e8b184152c5.jpg" :
-                "./images/euEsSe1jDmT59aqetVq2hLuD.jpeg";
+                $image = ($row->gender == "Female") ? "./images/33988c20a002ec982dc72e8b184152c5.jpg" : "./images/euEsSe1jDmT59aqetVq2hLuD.jpeg";
                 if(file_exists($row->image)){
                     $image = $row->image;
                 }
@@ -19,8 +18,7 @@
                 </div>";
             }
         }
-    $mydata .= '
-    <div>';
+    $mydata .= '</div>';
 
     # $result = $result[0];
     $info->message = $mydata;

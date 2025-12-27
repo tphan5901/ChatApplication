@@ -9,15 +9,15 @@
         $data = $data[0];
 
     //check if image exist
-    $image = ($data->gender == "Female") ? "./images/33988c20a002ec982dc72e8b184152c5.jpg" :
-        "./images/euEsSe1jDmT59aqetVq2hLuD.jpeg";
-        if(file_exists($data->image)){
-            $image = $data->image;
-        }
+    $image = ($data->gender == "Female") ? "./images/33988c20a002ec982dc72e8b184152c5.jpg" : "./images/euEsSe1jDmT59aqetVq2hLuD.jpeg";
+    if(file_exists($data->image)){
+        $image = $data->image;
+    }
 
     $gender_male = "";
     $gender_female = "";
-    if($data->gender == "Male"){
+
+    if($data->gender == "male"){
         $gender_male = "checked";
     } else {
         $gender_female = "checked";
@@ -69,13 +69,9 @@
     </style>
     </head>
     <body>
-
-        
-
         <div id="error">error</div>
             <div style="display: flex;">
                 <div>
-          
                     <img src="'.$image.'" style="width:200px;height:300px;margin:10px;">
                     <input type="button" value="Change Image" id="change_image_button"><br>    
                 </div>
@@ -91,14 +87,10 @@
                     <input type="text" name="password" placeholder="password" value="'.$data->password.'"><br>
                     <input type="text" name="password2" placeholder="retype password" value="'.$data->password.'"><br>
                     <input type="button" value="Save Settings" id="save_settings_button" onclick="collect_data(event)"><br>
-        
                 </form>
         </div>
-
     </body>
-    </html>
-
- ';
+    </html> ';
 
 }
 

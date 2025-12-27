@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Chat App</title>
+    <title>Chat Application</title>
 
 <style type='text/css'>
 
@@ -34,7 +34,7 @@
         width: 100%;
         height: 20px;
         display: block;
-        background-color: #1cc045ff;
+        background-color: #1c63c0ff;
         border-bottom: solid thin white;
         cursor: pointer;
         padding: 5px;
@@ -124,7 +124,7 @@
     <div id ='wrapper'>
         <div id="left_panel">
             <div id = "user_info" style="padding: 10px;">
-                <img src="./images/11c1de951326fdd816adc98f4a6e2cc9.jpg" id = "profile_image" alt="">
+                <img src="./images/5b80215ca600037c5f60ab9676e8c11c.jpg" id = "profile_image" alt="">
                 <br>
                 <span id="username">Asianbabe</span>
                 <br>
@@ -169,6 +169,7 @@
 
 <script type="text/javascript">
 
+    //select html element passed thru the constructor
     function _(element){
         return document.getElementById(element);
         
@@ -210,6 +211,7 @@
         
         if(result.trim() != ""){
             var obj = JSON.parse(result);
+            //do not use ||
             if(typeof(obj.logged_in) !== "undefined" && !obj.logged_in){
                 window.location = "login.php";
             } else {    
@@ -226,17 +228,18 @@
                         var inner_left_panel = _("inner_left_panel");
                         inner_left_panel.innerHTML = obj.message;
                         break;
-                   case "chats":
+                    case "chats":
                         var inner_left_panel = _("inner_left_panel");
                         inner_left_panel.innerHTML = obj.message;
                         break;
-                   case "settings":
+                    case "settings":
                         var inner_left_panel = _("inner_left_panel");
                         inner_left_panel.innerHTML = obj.message;
                         break;
-                   case "save_settings":
+                    case "save_settings":
                         alert(obj.message);
-                        get_data({}, "user_info");
+                        get_data("", "user_info");
+                        get_settings(true);
                         break;
                 }
             }
@@ -260,6 +263,7 @@
         get_data("", "chats");
     }
 
+    //retrieves settings component
     function get_settings(e){
         get_data("", "settings");
     }
@@ -300,10 +304,9 @@
                     case "password":
                         data.password = inputs[i].value;
                         break;
-                case "password2":
+                    case "password2":
                         data.password2 = inputs[i].value;
                         break;
-
                 }
             }
 
@@ -314,7 +317,7 @@
         //send data to backend
         function send_data(data, type){
             var xml = new XMLHttpRequest()
-            
+        
             xml.onload = function(){
                 if(xml.readyState === 4 && xml.status === 200){
                     handle_result(xml.responseText);
@@ -329,9 +332,12 @@
             //send to middleware
             xml.open("POST", "api.php", true);
             xml.send(data_string);
+
+            //log data being send
             console.log("Sending:", JSON.stringify(data));
 
         }
+
 
 
     </script>

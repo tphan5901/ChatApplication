@@ -1,8 +1,6 @@
 <?php
 
-    $mydata = '
-    
-   ';
+    $mydata = '';
    # $result = $result[0];
     $info->message = $mydata;
     $info->data_type = "contacts";

@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Chat App</title>
+    <title>Chat Application</title>
 
 <style type='text/css'>
-
+    
     #wrapper{
         max-width: 1000px;
         min-height: 700px;
@@ -21,6 +21,7 @@
         padding: 10px;
         width: 400px;
     }
+
     input[type=text], input[type=password],input[type=submit]{
         padding: 10px;
         margin: 10px;
@@ -28,6 +29,7 @@
         border-radius: 5px;
         border: solid 1px white;
     }
+
     input[type=submit]{
         padding: 1%;
         margin: 1%;
@@ -41,6 +43,7 @@
         transform: scale(1.1);
 
     }
+
     #header{
         background-color: #1f1c1cff;
         font-size:40px;
@@ -125,7 +128,6 @@
                 login_button.disabled = false;
                 login_button.value = "Login";
             }
-    
         }
         data.data_type = type;
         var data_string = JSON.stringify(data)

@@ -1,5 +1,6 @@
 <?php
 
+//database class
 Class Database{
 
     //connection string
@@ -61,7 +62,7 @@ Class Database{
         return false;
     }
 
-
+    //generate ID
     public function generate_id($max){
         $rand = "";
         $rand_count = rand(4,$max);
@@ -75,3 +76,4 @@ Class Database{
     }
 
 }
+

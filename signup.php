@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Chat App</title>
+    <title>Chat Application</title>
 
 <style type='text/css'>
 
@@ -126,10 +126,9 @@
                 case "password":
                     data.password = inputs[i].value;
                     break;
-               case "password2":
+                case "password2":
                     data.password2 = inputs[i].value;
                     break;
-
             }
         }
 
