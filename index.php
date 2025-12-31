@@ -124,7 +124,7 @@
     <div id ='wrapper'>
         <div id="left_panel">
             <div id = "user_info" style="padding: 10px;">
-                <img src="./images/5b80215ca600037c5f60ab9676e8c11c.jpg" id = "profile_image" alt="">
+                <img src="./images/5b80215ca600037c5f60ab9676e8c11c.jpg" id = "profile_image" style="height: 176px; width: 150px;">
                 <br>
                 <span id="username">Asianbabe</span>
                 <br>
@@ -246,6 +246,47 @@
         }
     }
 
+    function upload_profile_image(files){
+        var change_image_button  = _("change_image_button");
+        change_image_button.disabled = true;
+        change_image_button.value = "Uploading Image";
+        var myform = new FormData();
+        var xml = new XMLHttpRequest();
+
+        xml.onload = function(){
+            if(xml.readyState == 4 || xml.status == 200){
+                get_data("", "user_info");
+                get_settings(true);
+                var change_image_button  = _("change_image_button");
+                change_image_button.disabled = false;
+                change_image_button.innerHTML = "Change Image";
+            }
+        }
+
+        myform.append('file',files[0]);
+        myform.append('data_type',"change_profile_image") 
+        //send to middleware
+        xml.open("POST", "upload.php", true);
+        xml.send(myform);
+    }
+
+    function handle_drag_and_drop(e){
+        if(e.type == "dragover"){
+            e.preventDefault();
+            e.target.className = "dragging";
+
+        } else if(e.type == "dragleave"){
+            e.target.className = "";
+
+        } else if(e.type == "drop"){
+            e.preventDefault();
+            e.target.className = "";
+            upload_profile_image(e.dataTransfer.files);
+        } else {
+            e.target.className = "";
+        }
+    }
+
     function logout_user(){
         var answer = confirm("Are you sure you want to log out?");
         if(answer){
@@ -337,7 +378,6 @@
             console.log("Sending:", JSON.stringify(data));
 
         }
-
 
 
     </script>

@@ -27,6 +27,11 @@
    
     <style type="text/css">
 
+        @keyframes appear{
+            0%{oppacity:0; transform: translateY(50px) rotate(5deg); transform-origin: 100% 100%;}
+            100%{oppacity:1; transform: translateY(0px) rotate(0deg); transform-origin: 100% 100%;}
+        }
+
         form{
             text-align: center;
             margin: auto;
@@ -66,14 +71,22 @@
 
         }
 
+        .dragging{
+            border: dashed 2px #aaa;
+        }
+
     </style>
     </head>
     <body>
         <div id="error">error</div>
-            <div style="display: flex;">
+            <div style="display: flex; animation: appear 1s ease;">
                 <div>
-                    <img src="'.$image.'" style="width:200px;height:300px;margin:10px;">
-                    <input type="button" value="Change Image" id="change_image_button"><br>    
+                    <img src="'.$image.'" ondragover="handle_drag_and_drop(event)" ondrop="handle_drag_and_drop(event)" ondragleave="handle_drag_and_drop(event)"  style="width: 200px; height:300px; margin:10px;">
+                    <label for = "change_image_input" id = "change_image_button" style="background-color: #1ac963ff; color: white; display: inline-block; padding: 1em; border-radius: 5px; cursor: pointer;">
+                        Change Image
+                    </label>
+                    <input type="file" onchange="upload_profile_image(this.files)" id="change_image_input" style="display: none;"><br>    
+              
                 </div>
                 <form action="" id="myform">
                     <input type="text" name="username" placeholder="username" value="'.$data->username.'"><br>
@@ -92,17 +105,17 @@
     </body>
     </html> ';
 
-}
-
     $info->message = $mydata;
-    $info->data_type = "settings";
+    $info->data_type = "contacts";
     echo json_encode($info);
 
-    die;
+} else {
 
     $info->message = "No contacts are found";
     $info->data_type = "error";
     echo json_encode($info);
+
+}
 
 ?>
 

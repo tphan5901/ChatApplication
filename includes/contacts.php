@@ -3,7 +3,15 @@
     $sql = "select * from users limit 10";
     $myusers = $DB->read($sql,[]);
     $mydata =   
-    '<div style="text-align:center;">';
+    '
+    <style>
+        @keyframes appear{
+            0%{oppacity:0; transform: translateY(50px);}
+            100%{oppacity:1; transform: translateY(0px);}
+        }
+    </style>
+
+    <div style="text-align:center; animation: appear 1s ease;">';
         if(is_array($myusers)){
 
             foreach($myusers as $row){
