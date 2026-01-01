@@ -10,6 +10,7 @@
     #wrapper{
         max-width: 1000px;
         min-height: 700px;
+        max-height: 800px;
         display: flex;
         margin: auto;
         color: white;
@@ -78,12 +79,14 @@
         flex: 1;
         color: black;
         min-height: 630px;
+        max-height: 700px;
     }
 
     #inner_right_panel{
         background-color: #503131ff;
         flex: 2;
         min-height: 630px;
+        max-height: 700px;
         transition: all 2s ease;
     }
 
@@ -110,13 +113,12 @@
     }
 
     #active_contact{
-    
         height: 140px;
         border: solid thin #aaa; 
         margin: 10px;
         padding: 4px;
         background-color: #eee;
-        color: #444;
+        color: #444
     }
 
     #active_contact img{
@@ -124,6 +126,81 @@
         height: 130px;
         float: left;
         margin: 4px;
+        border-radius: 50%;
+    }
+
+    #message_left{
+        height: 130px;
+        border: solid thin #aaa; 
+        margin: 10px;
+        padding: 4px;
+        padding-right: 10px;
+        background-color: #c979d5;
+        color: white;
+        float: left;
+        box-shadow: 0px 0px 10px #aaa;
+        border-radius: 1%;
+    /*  border-bottom-left-radius: 50%; */
+        position: relative;
+        width: 60%;
+        min-width: 200px;
+    }
+
+    #message_left img{
+        width: 90px;
+        height: 100px;
+        float: left;
+        margin: 4px;
+        border-radius: 50%;
+        border: solid 2px white;
+    }
+
+    #message_left div{
+        width: 20px;
+        height: 20px;
+        background-color: #34474f;
+        border-radius: 50%;
+        position: absolute;
+        border: solid 2px white;
+        left: -10px;
+        top: 20px;
+    }
+
+    #message_right{
+        height: 130px;
+        border: solid thin #aaa; 
+        margin: 10px;
+        padding: 4px;
+        padding-right: 10px;
+        background-color: #fbffee;
+        color: black;
+        float: right;
+        box-shadow: 0px 0px 10px #aaa;
+        border-radius: 1%;
+    /*  border-bottom-right-radius: 50%; */
+        position: relative;
+        width: 60%;
+        min-width: 200px;
+    }
+
+    #message_right img{
+        width: 90px;
+        height: 100px;
+        float: left;
+        margin: 4px;
+        border-radius: 50%;
+        border: solid 2px white;
+    }
+
+    #message_right div{
+        width: 20px;
+        height: 20px;
+        background-color: #34474f;
+        border-radius: 50%;
+        position: absolute;
+        border: solid 2px white;
+        right: -10px;
+        top: 20px;
     }
 
     .loader_on{
@@ -136,6 +213,8 @@
         position: absolute;
         width: 30%;
     }
+    
+    
 </style>
 </head>
 <body>
@@ -188,6 +267,7 @@
 <script type="text/javascript">
 
     var CURRENT_CHAT_USER = "";
+
     //select html element passed thru the constructor
     function _(element){
         return document.getElementById(element);
@@ -218,7 +298,7 @@
         }
 
         var data = {};
-        data.find = find || {};
+        data.find = find;
         data.data_type = type;
 
         data = JSON.stringify(data);
@@ -229,6 +309,8 @@
     function handle_result(result){
         
         if(result.trim() != ""){
+            var inner_right_panel = _("inner_right_panel");     
+            inner_right_panel.style.overflow = "visible"; 
             var obj = JSON.parse(result);
             //do not use ||
             if(typeof(obj.logged_in) !== "undefined" && !obj.logged_in){
@@ -245,11 +327,14 @@
                         break;
                     case "contacts":
                         var inner_left_panel = _("inner_left_panel");
+                        inner_right_panel.style.overflow = "hidden";
                         inner_left_panel.innerHTML = obj.message;
+                     
                         break;
                     case "chats":
                         var inner_left_panel = _("inner_left_panel");
-                        inner_left_panel.innerHTML = obj.message;
+                        inner_left_panel.innerHTML = obj.user;
+                        inner_right_panel.innerHTML = obj.message;
                         break;
                     case "settings":
                         var inner_left_panel = _("inner_left_panel");
@@ -318,7 +403,7 @@
 
     var radio_contact = _("radio_contacts");
     radio_contacts.checked = true;
-    
+
     function get_contacts(e){
         get_data("", "contacts");
     }
@@ -330,6 +415,11 @@
     //retrieves settings component
     function get_settings(e){
         get_data("", "settings");
+    }
+
+    function send_message(e){
+        var message_text = _("message_text");
+        get_data("", "send_message");
     }
 
 </script>
@@ -401,7 +491,6 @@
             console.log("Sending:", JSON.stringify(data));
 
         }
-
 
         function start_chat(e){
             var userid = e.target.getAttribute('userid');
