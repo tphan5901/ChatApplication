@@ -109,10 +109,28 @@
         /*height: 100px; */
     }
 
+    #active_contact{
+    
+        height: 140px;
+        border: solid thin #aaa; 
+        margin: 10px;
+        padding: 4px;
+        background-color: #eee;
+        color: #444;
+    }
+
+    #active_contact img{
+        width: 100px;
+        height: 130px;
+        float: left;
+        margin: 4px;
+    }
+
     .loader_on{
         position: absolute;
         width: 30%;
     }
+
     .loader_off{
         display: none;
         position: absolute;
@@ -169,6 +187,7 @@
 
 <script type="text/javascript">
 
+    var CURRENT_CHAT_USER = "";
     //select html element passed thru the constructor
     function _(element){
         return document.getElementById(element);
@@ -199,7 +218,7 @@
         }
 
         var data = {};
-        data.find = find;
+        data.find = find || {};
         data.data_type = type;
 
         data = JSON.stringify(data);
@@ -295,7 +314,11 @@
     }
 
     get_data("", "user_info");
+    get_data("", "contacts");
 
+    var radio_contact = _("radio_contacts");
+    radio_contacts.checked = true;
+    
     function get_contacts(e){
         get_data("", "contacts");
     }
@@ -379,5 +402,19 @@
 
         }
 
+
+        function start_chat(e){
+            var userid = e.target.getAttribute('userid');
+            if(!userid){ // if clicked on child element
+                userid = e.target.parentNode.getAttribute("userid");
+            }
+
+            CURRENT_CHAT_USER = userid;
+
+            var radio_chat = _("radio_chat");
+            radio_chat.checked = true;
+
+            get_data({userid: CURRENT_CHAT_USER}, "chats"); // send proper payload
+        }
 
     </script>

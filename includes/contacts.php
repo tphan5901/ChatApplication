@@ -1,13 +1,24 @@
 <?php
 
-    $sql = "select * from users limit 10";
-    $myusers = $DB->read($sql,[]);
+    $myid = $_SESSION['userid'];
+    $sql = "SELECT * FROM users WHERE userid != :userid LIMIT 10"; 
+    $myusers = $DB->read($sql, ['userid' => $myid]);
+    //$myusers = $DB->read($sql,[]); old code
     $mydata =   
     '
     <style>
         @keyframes appear{
-            0%{oppacity:0; transform: translateY(50px);}
-            100%{oppacity:1; transform: translateY(0px);}
+            0%{opacity:0; transform: translateY(50px);}
+            100%{opacity:1; transform: translateY(0px);}
+        }
+
+        #contact{
+            cursor: pointer;
+            transition: all 1s cubic-bezier(0.68, -2, 0.265, 1.55);
+        }
+
+        #contact:hover{
+            transform: scale(1.1);
         }
     </style>
 
@@ -19,10 +30,10 @@
                 if(file_exists($row->image)){
                     $image = $row->image;
                 }
-                $mydata .= "     
-                <div id='contact'>
+                $mydata .= "   
+                <div id='contact' userid='$row->userid' onclick='start_chat(event)'>
                     <img src='$image'>
-                    <br>$row->username
+                    $row->username
                 </div>";
             }
         }
