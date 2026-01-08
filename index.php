@@ -307,7 +307,6 @@
     }
 
     function handle_result(result){
-        
         if(result.trim() != ""){
             var inner_right_panel = _("inner_right_panel");     
             inner_right_panel.style.overflow = "visible"; 
@@ -335,6 +334,12 @@
                         var inner_left_panel = _("inner_left_panel");
                         inner_left_panel.innerHTML = obj.user;
                         inner_right_panel.innerHTML = obj.message;
+                        var messages_holder = _("message_holder");
+                        setTimeout(function(){
+                            messages_holder.scrollTo(0,messages_holder.scrollHeight)
+                            var message_text = _("message_text");
+                            message_text.focus();
+                        },0)
                         break;
                     case "settings":
                         var inner_left_panel = _("inner_left_panel");
@@ -344,6 +349,10 @@
                         alert(obj.message);
                         get_data("", "user_info");
                         get_settings(true);
+                        break;
+                    case "send_message":
+                        alert(obj.message);
+                 
                         break;
                 }
             }
@@ -419,9 +428,30 @@
 
     function send_message(e){
         var message_text = _("message_text");
-        get_data("", "send_message");
+        if(message_text.value.trim() == ""){
+            return;
+        }
+
+        get_data({
+            message:message_text.value,
+            userid:CURRENT_CHAT_USER,
+        }, "send_message");
     }
 
+    function enter_pressed(e){
+        if(e.keyCode == 13){
+            send_message(e);
+        }
+    }
+/*
+    setInterval(function(){
+
+        if(CURRENT_CHAT_USER != ""){
+            get_data({userid: CURRENT_CHAT_USER}, "chats"); // send proper payload
+        }
+
+    },5000);
+*/
 </script>
 
 

@@ -28,25 +28,39 @@
             <div id = 'message_holder_parent' style='height: 100%;'>
                 <div id = 'message_holder' style='height: 90%; overflow-y:scroll;'>";
             
-                    $messages .= message_left($row);
-                    $messages .= message_right($row);
-                    $messages .= message_left($row);
-                    $messages .= message_right($row);
-                    $messages .= message_left($row);
-                    $messages .= message_right($row);
+                /*
+                    $messages .= message_left($data,$row);
+                    $messages .= message_right($data,$row);
+                    $messages .= message_left($data,$row);
+                    $messages .= message_right($data,$row);
+                    $messages .= message_left($data,$row);
+                    $messages .= message_right($data,$row);
+                */
 
-                    $messages .="
+                // fetch messages between these two users
+            /*
+                $a['sender'] = $_SESSION['userid'];
+                $a['receiver'] = $arr['userid'];
+                $sql = "SELECT * FROM messages WHERE (sender = :sender AND receiver = :receiver) OR (sender = :receiver AND receiver = :sender)
+                    ORDER BY date ASC";
 
-                </div>
+                $result2 = $DB->read($sql, $a);
+    
+                if(is_array($result2)){
+                    $result2 = array_reverse($result2);
 
-                <div style='display: flex; width: 100%; height:40px;'>
-                    <label for ='file'> <img src='ui/icons/clip.png' style='width: 30px; margin: 5px; cursor: pointer; opacity: 0.8;'> </label>
-                    <input id='message_file' type ='file' name= 'file' style='display:none;'/>
-                    <input id='message_text' type='text' style='flex: 6; border: solid thin #ccc; border-bottom: none; font-size: 14px; padding: 4px;'placeholder='type your message'/>
-                    <input type='button' style='flex: 1; cursor: pointer;' value='send'/>
-                </div>
-            </div>
-                ";
+                    foreach($result2 as $data){
+                        $myuser = $DB->get_user($data->sender);
+                        if($_SESSION['userid'] == $data->sender){
+                            $messages .= message_right($data, $myuser);
+                        } else {
+                            $messages .= message_left($data, $myuser);
+                        }
+                    }
+                }
+            */
+
+        $messages .= message_controls();
 
         $info->user = $mydata;
         $info->message = $messages;

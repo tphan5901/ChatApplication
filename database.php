@@ -62,6 +62,26 @@ Class Database{
         return false;
     }
 
+    public function get_user($userid){
+  
+        $con = $this->connect();
+        $arr['userid'] = $userid;
+        $query = "select * from users where userid =:userid limit 1";
+        $statement = $con->prepare($query);
+        $check = $statement->execute($arr);
+
+        if($check){
+            $result = $statement->fetchAll(PDO::FETCH_OBJ);
+            if(is_array($result) && count($result) > 0){
+                return $result[0];
+            }
+            return false;
+        }
+
+        return false;
+    }
+
+
     //generate ID
     public function generate_id($max){
         $rand = "";
