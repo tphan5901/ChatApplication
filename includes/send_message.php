@@ -7,7 +7,7 @@ if(isset($data_object->find->userid)){
 }
 
 // get user info
-$sql = "SELECT * FROM users WHERE userid = :userid LIMIT 1";
+$sql = "SELECT * FROM users WHERE userid = :userid";
 $result = $DB->read($sql, $arr);
 
 if(is_array($result)){

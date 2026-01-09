@@ -66,7 +66,7 @@ Class Database{
   
         $con = $this->connect();
         $arr['userid'] = $userid;
-        $query = "select * from users where userid =:userid limit 1";
+        $query = "select * from users where userid =:userid";
         $statement = $con->prepare($query);
         $check = $statement->execute($arr);
 

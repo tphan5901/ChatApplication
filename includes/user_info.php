@@ -7,7 +7,7 @@
     $data['userid'] = $_SESSION['userid'];
 
     if($Error == ""){
-        $query = "select * from users where userid = :userid limit 1";
+        $query = "select * from users where userid = :userid";
         $result = $DB->read($query, $data);
 
         if(is_array($result)){

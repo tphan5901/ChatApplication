@@ -1,6 +1,6 @@
 <?php
 
-    $sql = "select * from users where userid = :userid limit 1";
+    $sql = "select * from users where userid = :userid";
     $id = $_SESSION['userid'];
     $data = $DB->read($sql,['userid'=>$id]);
 

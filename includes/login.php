@@ -4,7 +4,7 @@
 
   $data = [];
   $data['username'] = $data_object->username;
-  //    $data['password'] = $data_object->password;
+//$data['password'] = $data_object->password;
 
   if(empty($data_object->username)){
     $Error = "please enter a valid username";

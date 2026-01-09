@@ -410,7 +410,7 @@
     get_data("", "user_info");
     get_data("", "contacts");
 
-    var radio_contact = _("radio_contacts");
+    var radio_contacts = _("radio_contacts");
     radio_contacts.checked = true;
 
     function get_contacts(e){
@@ -443,15 +443,15 @@
             send_message(e);
         }
     }
-/*
+
     setInterval(function(){
 
         if(CURRENT_CHAT_USER != ""){
-            get_data({userid: CURRENT_CHAT_USER}, "chats"); // send proper payload
+            get_data({userid: CURRENT_CHAT_USER}, "chats_refresh"); // send proper payload
         }
 
     },5000);
-*/
+
 </script>
 
 

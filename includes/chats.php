@@ -6,7 +6,11 @@
            $arr['userid'] = $data_object->find->userid;
     }
 
-    $sql = "select * from users where userid = :userid limit 1";
+    $refresh = false;
+    if($data_object->data_type == "chats_refresh"){
+        $refresh = true;
+    }
+    $sql = "select * from users where userid = :userid";
     $result = $DB->read($sql, $arr);
 
     if(is_array($result)){
@@ -18,16 +22,20 @@
         }
         
         $row->image = $image;
-        $mydata = "Now Chatting with: <br>  
-                <div id='active_contact'>
-                    <img src='$image'>
-                    <br>$row->username
-                </div>";
 
-        $messages = "
-            <div id = 'message_holder_parent' style='height: 100%;'>
-                <div id = 'message_holder' style='height: 90%; overflow-y:scroll;'>";
-            
+        if(!$refresh){
+            $mydata = "Now Chatting with: <br>  
+                    <div id='active_contact'>
+                        <img src='$image'>
+                        <br>$row->username
+                    </div>";
+        }
+
+        if(!$refresh){
+            $messages = "
+                <div id = 'message_holder_parent' style='height: 100%;'>
+                    <div id = 'message_holder' style='height: 90%; overflow-y:scroll;'>";
+        }
                 /*
                     $messages .= message_left($data,$row);
                     $messages .= message_right($data,$row);
@@ -60,11 +68,17 @@
                 }
             */
 
-        $messages .= message_controls();
+        if(!$refresh){
+            $messages .= message_controls();
+        }
 
         $info->user = $mydata;
         $info->message = $messages;
         $info->data_type = "chats";
+        if($refresh){
+            $info->data_type = "chats_refresh";
+        }
+
         echo json_encode($info);
 
     } else {

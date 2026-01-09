@@ -44,7 +44,7 @@ if(isset($data_object->data_type) && $data_object->data_type == "signup"){
 } else if(isset($data_object->data_type) && $data_object->data_type == "contacts"){
     //contacts
     include("includes/contacts.php");
-} else if(isset($data_object->data_type) && $data_object->data_type == "chats"){
+} else if(isset($data_object->data_type) && ($data_object->data_type == "chats" || $data_object->data_type == "chats_refresh")){
     //chats
     include("includes/chats.php");
 } else if(isset($data_object->data_type) && $data_object->data_type == "settings"){
@@ -91,8 +91,8 @@ function message_controls(){
                 <img src='ui/icons/clip.png' style='width:30px; background-color:white; margin:5px; cursor:pointer; opacity:0.8;'>
             </label>
             <input id='message_file' type='file' name='file' style='display:none;'/>
-            <input id='message_text' onkeyup='enter_pressed(event)' type='text' style='flex:6; border:solid thin #ccc; border-bottom:none; font-size:14px; padding:4px;' placeholder='Type your message'/>
-            <input type='button' onclick='send_message(event)' style='flex:1; cursor:pointer; background-color:#1ac963ff; color:white;' value='Send'/>
+            <input id='message_text' onkeyup='enter_pressed(event)' type='text' style='flex:6; border:solid thin #ccc; padding: 5px; font-size:14px;' placeholder='Type your message'/>
+            <input type='button' onclick='send_message(event)' style='flex:1; cursor:pointer; background-color:#1ac963ff; border-radius: 5px; color:white;' value='Send'/>
             </div>
         </div> ";
 
