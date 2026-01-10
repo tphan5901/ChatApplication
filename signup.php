@@ -42,7 +42,6 @@
 
     input[type=radio]{
         transform: scale(1.1);
-
     }
     
     #header{
@@ -81,7 +80,6 @@
             <input type="button" value='SignUp' id='signup_button'><br>
             <br>
             <a href="login.php" style="display: block; text-align: center; text-decoration: none;">Already have an account?</a>
-
         </form>
     </div>
 

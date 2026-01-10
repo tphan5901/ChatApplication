@@ -23,6 +23,7 @@
         flex: 1;   
         padding: 10px;
         text-align: center;
+    
     }
     
     #left_panel img{
@@ -324,35 +325,46 @@
                         email.innerHTML = obj.email;
                         profile_image.src = obj.image;
                         break;
+                        
                     case "contacts":
                         var inner_left_panel = _("inner_left_panel");
                         inner_right_panel.style.overflow = "hidden";
                         inner_left_panel.innerHTML = obj.message;
-                     
                         break;
+
+                    case "chats_refresh":
+                        var message_holder = _("message_holder"); // make sure id matches PHP
+                        if(message_holder){
+                            message_holder.innerHTML = obj.messages;
+                            message_holder.scrollTo(0, message_holder.scrollHeight);
+                        }
+                        break;
+
                     case "chats":
                         var inner_left_panel = _("inner_left_panel");
                         inner_left_panel.innerHTML = obj.user;
                         inner_right_panel.innerHTML = obj.message;
-                        var messages_holder = _("message_holder");
+                        var message_holder = _("message_holder");
                         setTimeout(function(){
-                            messages_holder.scrollTo(0,messages_holder.scrollHeight)
+                            message_holder.scrollTo(0,message_holder.scrollHeight)
                             var message_text = _("message_text");
                             message_text.focus();
-                        },0)
+                        },100)
                         break;
+
                     case "settings":
                         var inner_left_panel = _("inner_left_panel");
                         inner_left_panel.innerHTML = obj.message;
                         break;
+
                     case "save_settings":
                         alert(obj.message);
                         get_data("", "user_info");
                         get_settings(true);
                         break;
+
                     case "send_message":
                         alert(obj.message);
-                 
                         break;
                 }
             }
@@ -444,6 +456,7 @@
         }
     }
 
+/*
     setInterval(function(){
 
         if(CURRENT_CHAT_USER != ""){
@@ -451,6 +464,18 @@
         }
 
     },5000);
+*/
+
+    // auto-refresh for real-time chat
+    setInterval(function(){
+        // Only refresh if a chat is open
+        if(CURRENT_CHAT_USER != ""){
+            var messages_holder = document.getElementById("message_holder");
+            if(messages_holder){ // check that the chat DOM exists
+                get_data({userid: CURRENT_CHAT_USER}, "chats_refresh");
+            }
+        }
+    }, 10000);
 
 </script>
 
@@ -524,16 +549,15 @@
 
         function start_chat(e){
             var userid = e.target.getAttribute('userid');
-            if(!userid){ // if clicked on child element
+            if(!userid){ 
                 userid = e.target.parentNode.getAttribute("userid");
             }
 
             CURRENT_CHAT_USER = userid;
-
             var radio_chat = _("radio_chat");
             radio_chat.checked = true;
 
-            get_data({userid: CURRENT_CHAT_USER}, "chats"); // send proper payload
+            get_data({userid: CURRENT_CHAT_USER}, "chats"); 
         }
 
     </script>

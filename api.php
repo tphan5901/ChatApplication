@@ -60,6 +60,14 @@ if(isset($data_object->data_type) && $data_object->data_type == "signup"){
 
 
 function message_left($data, $row){
+    
+    $image = ($row->gender == "Female") 
+            ? "./images/33988c20a002ec982dc72e8b184152c5.jpg" 
+            : "./images/euEsSe1jDmT59aqetVq2hLuD.jpeg";
+    if(file_exists($row->image)){
+        $image = $row->image;
+    }
+
     return "
         <div id='message_left'>
             <div></div>
@@ -71,6 +79,7 @@ function message_left($data, $row){
 }
 
 function message_right($data, $row){
+
     return "
         <div id='message_right'>
             <div></div>

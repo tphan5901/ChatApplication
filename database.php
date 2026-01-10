@@ -82,7 +82,7 @@ Class Database{
     }
 
 
-    //generate ID
+    //generate ID for user
     public function generate_id($max){
         $rand = "";
         $rand_count = rand(4,$max);
