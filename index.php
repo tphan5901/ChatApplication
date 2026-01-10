@@ -268,6 +268,7 @@
 <script type="text/javascript">
 
     var CURRENT_CHAT_USER = "";
+    var SEEN_STATUS = false;
 
     //select html element passed thru the constructor
     function _(element){
@@ -333,14 +334,18 @@
                         break;
 
                     case "chats_refresh":
-                        var message_holder = _("message_holder"); // make sure id matches PHP
+                        SEEN_STATUS = false;
+                        var message_holder = _("message_holder");
                         if(message_holder){
-                            message_holder.innerHTML = obj.messages;
+                        //  message_holder.innerHTML = obj.messages; this line causes undefined to appear when interval function refreshes(fetches) from message table
+                            message_holder.innerHTML = obj.message;
                             message_holder.scrollTo(0, message_holder.scrollHeight);
                         }
-                        break;
+                    break;
+
 
                     case "chats":
+                        SEEN_STATUS = false;
                         var inner_left_panel = _("inner_left_panel");
                         inner_left_panel.innerHTML = obj.user;
                         inner_right_panel.innerHTML = obj.message;
@@ -430,7 +435,7 @@
     }
 
     function get_chats(e){
-        get_data("", "chats");
+        get_data({seen: SEEN_STATUS}, "chats");
     }
 
     //retrieves settings component
@@ -454,28 +459,22 @@
         if(e.keyCode == 13){
             send_message(e);
         }
+        SEEN_STATUS = true;
     }
 
-/*
-    setInterval(function(){
-
-        if(CURRENT_CHAT_USER != ""){
-            get_data({userid: CURRENT_CHAT_USER}, "chats_refresh"); // send proper payload
-        }
-
-    },5000);
-*/
+    function set_seen(e){
+        SEEN_STATUS = true;
+    }
 
     // auto-refresh for real-time chat
     setInterval(function(){
         // Only refresh if a chat is open
         if(CURRENT_CHAT_USER != ""){
-            var messages_holder = document.getElementById("message_holder");
-            if(messages_holder){ // check that the chat DOM exists
-                get_data({userid: CURRENT_CHAT_USER}, "chats_refresh");
-            }
+            get_data({userid:CURRENT_CHAT_USER,
+                seen:SEEN_STATUS
+            }, "chats_refresh");
         }
-    }, 10000);
+    }, 5000);
 
 </script>
 

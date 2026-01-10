@@ -9,8 +9,12 @@
         $arr['userid'] = $data_object->find->userid;
     }
 
-    // Determine if this is a refresh request
     $refresh = false;
+    $seen = false;
+    if($data_object->data_type == "chats_refresh"){
+        $refresh = true;
+        $seen = $data_object->find->seen;
+    }
 
     //load user
     $sql = "SELECT * FROM users WHERE userid = :userid";
@@ -31,7 +35,7 @@
         // message holder
         if(!$refresh){
             $messages .= "
-            <div id='message_holder_parent' style='height:100%;'>
+            <div id='message_holder_parent' onclick='set_seen(event)' style='height:100%;'>
                 <div id='message_holder' style='height:90%; overflow-y:auto;'>";
         }
 
@@ -39,6 +43,13 @@
             foreach($messages_list as $data){
                 $myuser = $DB->get_user($data->sender);
 
+                if($data->receiver == $_SESSION['userid'] && $data->received == 1 && $seen){
+                    $DB->write("update messages set seen = 1 where id = '$data->id' limit 1");
+                }
+                if($data->receiver == $_SESSION['userid']){
+                    $DB->write("update messages set received = 1 where id = '$data->id' limit 1");
+                }
+                
                 if($_SESSION['userid'] == $data->sender){
                     $messages .= message_right($data, $myuser);
                 } else {
