@@ -60,8 +60,7 @@ if(isset($data_object->data_type) && $data_object->data_type == "signup"){
 
 
 function message_left($data, $row){
-    
-    $image = ($row->gender == "Female") 
+   $image = ($row->gender == "Female") 
             ? "./images/33988c20a002ec982dc72e8b184152c5.jpg" 
             : "./images/euEsSe1jDmT59aqetVq2hLuD.jpeg";
     if(file_exists($row->image)){
@@ -79,15 +78,31 @@ function message_left($data, $row){
 }
 
 function message_right($data, $row){
+    $image = ($row->gender == "Female") 
+            ? "./images/33988c20a002ec982dc72e8b184152c5.jpg" 
+            : "./images/euEsSe1jDmT59aqetVq2hLuD.jpeg";
+    if(file_exists($row->image)){
+        $image = $row->image;
+    }
 
-    return "
+    $a = "
         <div id='message_right'>
-            <div></div>
-            <img src='{$row->image}' style='float:right;'>
+
+        <div>";
+        if($data->seen){
+            "<img src='ui/icons/check.png' style=''/>";
+        } elseif($data->received) {
+            "<img src='ui/icons/check2.png' style=''/>";
+        }
+        $a .= "
+        </div>
+            <img src = '$image' style='float:right'/>
             <b>{$row->username}</b><br>
             {$data->message}<br><br>
             <span style='font-size: 10px; color: black;'>".date("jS M Y H:i:s a",strtotime($data->date))."</span>
         </div>";
+
+    return $a;
 }
 
 

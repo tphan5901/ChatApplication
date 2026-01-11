@@ -4,6 +4,7 @@
     $arr['userid'] = "null";
     $mydata = "";
     $messages = "";
+    $new_message = false;
     // Get the target user if passed
     if(isset($data_object->find->userid)){
         $arr['userid'] = $data_object->find->userid;
@@ -43,13 +44,15 @@
             foreach($messages_list as $data){
                 $myuser = $DB->get_user($data->sender);
 
+                if($data->receiver == $_SESSION['userid'] && $data->received == 0){
+                    $new_message = true;
+                }
                 if($data->receiver == $_SESSION['userid'] && $data->received == 1 && $seen){
                     $DB->write("update messages set seen = 1 where id = '$data->id' limit 1");
                 }
                 if($data->receiver == $_SESSION['userid']){
                     $DB->write("update messages set received = 1 where id = '$data->id' limit 1");
                 }
-                
                 if($_SESSION['userid'] == $data->sender){
                     $messages .= message_right($data, $myuser);
                 } else {
@@ -96,9 +99,12 @@
             foreach($result2 as $data){
                 $other_user = $data->sender;
                 
-                if($data->sender == $_SESSION['userid']){
-                    $other_user = $data->receiver;
-                }
+                // determine other user in conversation
+                        if($data->sender == $_SESSION['userid']){
+                            $other_user = $data->receiver;
+                        } else {
+                            $other_user = $data->sender;
+                        }
 
                 $myuser = $DB->get_user($other_user);
                 $image = ($myuser->gender == "Male") ? "./images/33988c20a002ec982dc72e8b184152c5.jpg" : "./images/euEsSe1jDmT59aqetVq2hLuD.jpeg";
@@ -123,7 +129,12 @@
 
         $info->user = $mydata;
         $info->message = ""; 
-        $info->data_type = "chats";
+        $info->data_type = "chats";  
+        $info->new_message = $new_message;
+        if($refresh){
+            $info->data_type = "chats_refresh";
+          
+        }
         echo json_encode($info);
         exit;
     }

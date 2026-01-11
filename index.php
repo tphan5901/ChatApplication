@@ -193,6 +193,18 @@
         border: solid 2px white;
     }
 
+    #message_right div img{
+        width: 20px;
+        height: 20px;
+        float: none;
+        margin: 0px;
+        border-radius: 50%;
+        border: none;
+        position: absolute;
+        top: 30px;
+        right: 30px;
+    }
+
     #message_right div{
         width: 20px;
         height: 20px;
@@ -214,7 +226,6 @@
         position: absolute;
         width: 30%;
     }
-    
     
 </style>
 </head>
@@ -269,6 +280,8 @@
 
     var CURRENT_CHAT_USER = "";
     var SEEN_STATUS = false;
+    var sent_audio = new Audio('message_sent.mp3')
+    var received_audio = new Audio('message_received.mp3')
 
     //select html element passed thru the constructor
     function _(element){
@@ -336,14 +349,19 @@
                     case "chats_refresh":
                         SEEN_STATUS = false;
                         var message_holder = _("message_holder");
-                        if(message_holder){
-                        //  message_holder.innerHTML = obj.messages; this line causes undefined to appear when interval function refreshes(fetches) from message table
-                            message_holder.innerHTML = obj.message;
-                            message_holder.scrollTo(0, message_holder.scrollHeight);
+                    //  message_holder.innerHTML = obj.messages; this line causes undefined to appear when interval function refreshes(fetches) from message table
+                        message_holder.innerHTML = obj.message;
+                     
+                        if(typeof obj.new_message != 'undefined'){
+                            if(obj.new_message){
+                                received_audio.play();
+                            }
                         }
-                    break;
+                        break;
 
-
+                    case "send_message":
+                        sent_audio.play();
+                    
                     case "chats":
                         SEEN_STATUS = false;
                         var inner_left_panel = _("inner_left_panel");
@@ -355,6 +373,11 @@
                             var message_text = _("message_text");
                             message_text.focus();
                         },100)
+                        if(typeof obj.new_message != 'undefined'){
+                            if(obj.new_message){
+                                received_audio.play();
+                            }
+                        }
                         break;
 
                     case "settings":
@@ -366,10 +389,6 @@
                         alert(obj.message);
                         get_data("", "user_info");
                         get_settings(true);
-                        break;
-
-                    case "send_message":
-                        alert(obj.message);
                         break;
                 }
             }
