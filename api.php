@@ -56,6 +56,9 @@ if(isset($data_object->data_type) && $data_object->data_type == "signup"){
 }  else if(isset($data_object->data_type) && $data_object->data_type == "send_message"){
     //send message
     include("includes/send_message.php");
+}  else if(isset($data_object->data_type) && $data_object->data_type == "delete_message"){
+    //send message
+    include("includes/delete_message.php");
 }
 
 
@@ -70,10 +73,11 @@ function message_left($data, $row){
     return "
         <div id='message_left'>
             <div></div>
-            <img src='{$row->image}'>
+            <img id='prof_img' src='{$row->image}'>
             <b>{$row->username}</b><br>
             {$data->message}<br><br>
             <span style='font-size: 10px; color: black;'>{$data->date}</span>
+            <img id='trash' src = 'ui/icons/trash.png' onclick='delete_message(event)' msgid='$data->id' />
         </div>";
 }
 
@@ -87,8 +91,8 @@ function message_right($data, $row){
 
     $a = "
         <div id='message_right'>
-
         <div>";
+
         if($data->seen){
             "<img src='ui/icons/check.png' style=''/>";
         } elseif($data->received) {
@@ -96,10 +100,11 @@ function message_right($data, $row){
         }
         $a .= "
         </div>
-            <img src = '$image' style='float:right'/>
+            <img id='prof_img' src = '$image' style='float:right'/>
             <b>{$row->username}</b><br>
             {$data->message}<br><br>
             <span style='font-size: 10px; color: black;'>".date("jS M Y H:i:s a",strtotime($data->date))."</span>
+            <img id='trash' src = 'ui/icons/trash.png' onclick='delete_message(event)' msgid='$data->id' />
         </div>";
 
     return $a;
@@ -108,9 +113,10 @@ function message_right($data, $row){
 
 function message_controls(){
 
-    return 
-        "</div>
-            <div style='display:flex; width:100%; height:40px;'>
+    return "
+        </div>
+        <span style='color:white; cursor: pointer;'> Delete this thread </span>
+        <div style='display:flex; width:100%; height:40px;'>
             <label for='message_file'>
                 <img src='ui/icons/clip.png' style='width:30px; background-color:white; margin:5px; cursor:pointer; opacity:0.8;'>
             </label>

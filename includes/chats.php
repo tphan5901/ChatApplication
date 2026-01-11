@@ -28,7 +28,7 @@
         // Fetch all messages between current user and selected contact
         $a['sender']   = $_SESSION['userid'];
         $a['receiver'] = $arr['userid'];
-        $sql2 = "SELECT * FROM messages WHERE (sender = :sender AND receiver = :receiver) OR (sender = :receiver AND receiver = :sender) ORDER BY date ASC";
+        $sql2 = "SELECT * FROM messages WHERE (sender = :sender AND receiver = :receiver AND deleted_sender = 0) || (receiver = :sender AND sender = :receiver AND deleted_receiver = 0) ORDER BY id ASC";
         $messages_list = $DB->read($sql2, $a);
 
         $mydata = "";
