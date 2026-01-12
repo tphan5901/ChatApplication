@@ -27,8 +27,8 @@ if(isset($_POST['data_type'])){
 
 $destination = "";
 if(isset($_FILES['file']) && $_FILES['file']['name'] != ""){
-    if($_FILES['files']['error'] == 0){
-        $folder = 'uploads/';
+    $folder = 'uploads/';
+    if($_FILES['file']['error'] == 0){
         if(!file_exists($folder)){
             mkdir($folder,0777,true);
         }
@@ -50,4 +50,45 @@ if($data_type == "change_profile_image"){
         $DB->write($query, []);
     }
 
+} else if ($data_type === "send_image") {
+
+    if (!isset($_POST['userid']) || empty($_POST['userid'])) {
+        echo json_encode(['error'=>'No receiver specified']);
+        exit;
+    }
+
+    $receiver_id = $_POST['userid'];
+
+    $arr = [];
+    $arr['sender']   = $_SESSION['userid'];
+    $arr['receiver'] = $receiver_id;
+    $arr['message']  = "";  // optional, or any text
+    $arr['date']     = date('Y-m-d H:i:s');
+    $arr['msgid']    = get_random_string_max(60);
+    $arr['file']     = $destination;
+
+    $query = "INSERT INTO messages (sender, receiver, message, date, msgid, files)
+              VALUES (:sender, :receiver, :message, :date, :msgid, :file)";
+
+    $DB->write($query, $arr);
+
+    echo json_encode([
+        'data_type' => 'send_image',
+        'status' => 'success'
+    ]);
+    exit;
+}
+
+
+
+// random string generator
+function get_random_string_max($length){
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
+    $text = '';
+    $length = rand(4, $length);
+    for($i=0; $i<$length; $i++){
+        $randomIndex = rand(0, strlen($characters)-1);
+        $text .= $characters[$randomIndex];
+    }
+    return $text;
 }

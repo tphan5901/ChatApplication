@@ -131,10 +131,10 @@
     }
 
     #message_left{
-        height: 130px;
+
         border: solid thin #aaa; 
         margin: 10px;
-        padding: 4px;
+        padding: 2px;
         padding-right: 10px;
         background-color: #c979d5;
         color: white;
@@ -168,10 +168,9 @@
     }
 
     #message_right{
-        height: 130px;
         border: solid thin #aaa; 
         margin: 10px;
-        padding: 4px;
+        padding: 2px;
         padding-right: 10px;
         background-color: #fbffee;
         color: black;
@@ -375,11 +374,18 @@
                                 received_audio.play();
                             }
                         }
+                        setTimeout(function(){
+                            message_holder.scrollTo(0,message_holder.scrollHeight)
+                            var message_text = _("message_text");
+                            message_text.focus();
+                        },100)
+
                         break;
 
                     case "send_message":
                         sent_audio.play();
-                    
+                        break;
+                        
                     case "chats":
                         SEEN_STATUS = false;
                         var inner_left_panel = _("inner_left_panel");
@@ -407,6 +413,8 @@
                         alert(obj.message);
                         get_data("", "user_info");
                         get_settings(true);
+                        break;
+                    case "send_image":
                         break;
                 }
             }
@@ -437,6 +445,30 @@
         xml.send(myform);
     }
 
+    function send_image(files){
+        var file = files[0]
+        var myform = new FormData();
+
+        var xml = new XMLHttpRequest();
+
+        xml.onload = function(){
+                if(xml.readyState == 4 || xml.status == 200){
+                  handle_result(xml.responseText, "send_image");
+                  get_data({userid:CURRENT_CHAT_USER,
+                    seen:SEEN_STATUS
+                }, "chats_refresh");
+                }
+            }
+
+            myform.append('file',files[0]);
+            myform.append('data_type',"send_image") 
+            myform.append('userid', CURRENT_CHAT_USER)
+            //send to middleware
+            xml.open("POST", "upload.php", true);
+            xml.send(myform);
+
+    }
+    
     function handle_drag_and_drop(e){
         if(e.type == "dragover"){
             e.preventDefault();

@@ -1,6 +1,4 @@
 <?php
-
-
     $arr['userid'] = "null";
     $mydata = "";
     $messages = "";
@@ -86,57 +84,62 @@
         exit;
 
     } else {
-        // Previews chats if no specific user selected
+    
         $a['userid'] = $_SESSION['userid'];
-        $sql = "SELECT * FROM messages WHERE id IN (SELECT MAX(id) FROM messages WHERE sender = :userid OR receiver = :userid
-                    GROUP BY CASE WHEN sender = :userid THEN receiver ELSE sender END) ORDER BY id DESC";
+
+        // Get last message per conversation
+        $sql = "
+            SELECT * FROM messages 
+            WHERE id IN (
+                SELECT MAX(id) 
+                FROM messages 
+                WHERE sender = :userid OR receiver = :userid
+                GROUP BY CASE 
+                            WHEN sender = :userid THEN receiver 
+                            ELSE sender 
+                        END
+            ) 
+            ORDER BY id DESC
+        ";
         $result2 = $DB->read($sql, $a);
 
         $mydata = "Previews Chats:<br>";
-        
+
         if(is_array($result2)){
             $added_users = [];
             foreach($result2 as $data){
-                $other_user = $data->sender;
-                
-                // determine other user in conversation
-                        if($data->sender == $_SESSION['userid']){
-                            $other_user = $data->receiver;
-                        } else {
-                            $other_user = $data->sender;
-                        }
 
-                $myuser = $DB->get_user($other_user);
-                $image = ($myuser->gender == "Male") ? "./images/33988c20a002ec982dc72e8b184152c5.jpg" : "./images/euEsSe1jDmT59aqetVq2hLuD.jpeg";
-                if(file_exists($myuser->image)){
+                // determine the other user in conversation
+                $other_user_id = ($data->sender == $_SESSION['userid']) ? $data->receiver : $data->sender;
+                $myuser = $DB->get_user($other_user_id);
+                
+                // default image if missing
+                $image = ($myuser->gender == "Female") 
+                            ? "./images/33988c20a002ec982dc72e8b184152c5.jpg" 
+                            : "./images/euEsSe1jDmT59aqetVq2hLuD.jpeg";
+
+                if(!empty($myuser->image) && file_exists($myuser->image)){
                     $image = $myuser->image;
                 }
 
-            /*
-                $image = (file_exists($myuser->image)) 
-                            ? $myuser->image 
-                            : (($myuser->gender == "Female") 
-                            ? "./images/33988c20a002ec982dc72e8b184152c5.jpg" 
-                            : "./images/euEsSe1jDmT59aqetVq2hLuD.jpeg");
-            */
+                $message_preview = htmlspecialchars($data->message ?? ''); // sanitize
 
-                $mydata .= "<div id='active_contact' userid='$myuser->userid' onclick='start_chat(event)' style='cursor:pointer;'>
-                                <img src='$image'> $myuser->username <br>
-                                <span style ='font-size: 11px;'>'$data->message'</span>
-                            </div>";
+                $mydata .= "
+                    <div id='active_contact' userid='{$myuser->userid}' onclick='start_chat(event)' style='cursor:pointer;'>
+                        <img src='{$image}'> {$myuser->username} <br>
+                        <span style='font-size:11px;'>{$message_preview}</span>
+                    </div>";
             }
         }
 
         $info->user = $mydata;
-        $info->message = ""; 
-        $info->data_type = "chats";  
+        $info->message = "<div id='message_holder_parent'><div id='message_holder' style='height:90%; overflow-y:auto;'></div></div>";
+        $info->data_type = $refresh ? "chats_refresh" : "chats";
         $info->new_message = $new_message;
-        if($refresh){
-            $info->data_type = "chats_refresh";
-          
-        }
+
         echo json_encode($info);
         exit;
-    }
+}
+
 
 ?>

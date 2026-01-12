@@ -106,6 +106,7 @@ function message_right($data, $row){
             <img id='prof_img' src = '$image' style='float:right'/>
             <b>{$row->username}</b><br>
             {$data->message}<br><br>
+            <img src='$data->files' style='width: 100%' /> <br>
             <span style='font-size: 10px; color: black;'>".date("jS M Y H:i:s a",strtotime($data->date))."</span>
             <img id='trash' src = 'ui/icons/trash.png' onclick='delete_message(event)' msgid='$data->id' />
         </div>";
@@ -123,7 +124,7 @@ function message_controls(){
             <label for='message_file'>
                 <img src='ui/icons/clip.png' style='width:30px; background-color:white; margin:5px; cursor:pointer; opacity:0.8;'>
             </label>
-            <input id='message_file' type='file' name='file' style='display:none;'/>
+            <input id='message_file' type='file' name='file' style='display:none;' onchange='send_image(this.files)'/>
             <input id='message_text' onkeyup='enter_pressed(event)' type='text' style='flex:6; border:solid thin #ccc; padding: 5px; font-size:14px;' placeholder='Type your message'/>
             <input type='button' onclick='send_message(event)' style='flex:1; cursor:pointer; background-color:#1ac963ff; border-radius: 5px; color:white;' value='Send'/>
             </div>

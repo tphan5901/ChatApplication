@@ -70,17 +70,17 @@
         exit;
     }
 
-        #update user table using data obtained from form fields
-        $query = "UPDATE users SET username = :username, email = :email, gender = :gender, password = :password WHERE userid = :userid limit 1";
-        $result = $DB->write($query, $data);
+    #update user table using data obtained from form fields
+    $query = "UPDATE users SET username = :username, email = :email, gender = :gender, password = :password WHERE userid = :userid limit 1";
+    $result = $DB->write($query, $data);
 
-        if($result){
-            $info->message = "Profile settings saved";
-            $info->data_type = "save_settings";
-            echo json_encode($info);
-        } else {
-            $info->message = "Error saving settings";
-            $info->data_type = "save_settings"; 
-            echo json_encode($info);
-        }
+    if($result){
+        $info->message = "Profile settings saved";
+        $info->data_type = "save_settings";
+        echo json_encode($info);
+    } else {
+        $info->message = "Error saving settings";
+        $info->data_type = "save_settings"; 
+        echo json_encode($info);
+    }
 
