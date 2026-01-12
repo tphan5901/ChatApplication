@@ -23,13 +23,23 @@
 
         //get first result
         $row = $result[0];
-        // Fetch all messages between current user and selected contact
-        $a['sender']   = $_SESSION['userid'];
-        $a['receiver'] = $arr['userid'];
-        $sql2 = "SELECT * FROM messages WHERE (sender = :sender AND receiver = :receiver AND deleted_sender = 0) || (receiver = :sender AND sender = :receiver AND deleted_receiver = 0) ORDER BY id ASC";
-        $messages_list = $DB->read($sql2, $a);
 
+        $image = ($row->gender == "Female") 
+                            ? "images/33988c20a002ec982dc72e8b184152c5.jpg" 
+                            : "images/euEsSe1jDmT59aqetVq2hLuD.jpeg";
+                            
+        $row->image = $image;
         $mydata = "";
+  
+        $mydata = "
+            Now Chatting with:<br>
+            <div id='active_contact' userid='{$row->userid}'>
+                <img src='$image'><br>
+                $row->username
+            </div>";
+        
+        $messages = "";
+        $new_message = false;
 
         // message holder
         if(!$refresh){
@@ -38,71 +48,62 @@
                 <div id='message_holder' style='height:90%; overflow-y:auto;'>";
         }
 
-        if(is_array($messages_list)){
-            foreach($messages_list as $data){
-                $myuser = $DB->get_user($data->sender);
+            // Fetch all messages between current user and selected contact
+            $a['sender']   = $_SESSION['userid'];
+            $a['receiver'] = $arr['userid'];
+            $sql = "SELECT * FROM messages WHERE (sender = :sender AND receiver = :receiver AND deleted_sender = 0) || (receiver = :sender AND sender = :receiver AND deleted_receiver = 0) ORDER BY id ASC";
+            $messages_list = $DB->read($sql, $a);
 
-                if($data->receiver == $_SESSION['userid'] && $data->received == 0){
-                    $new_message = true;
-                }
-                if($data->receiver == $_SESSION['userid'] && $data->received == 1 && $seen){
-                    $DB->write("update messages set seen = 1 where id = '$data->id' limit 1");
-                }
-                if($data->receiver == $_SESSION['userid']){
-                    $DB->write("update messages set received = 1 where id = '$data->id' limit 1");
-                }
-                if($_SESSION['userid'] == $data->sender){
-                    $messages .= message_right($data, $myuser);
-                } else {
-                    $messages .= message_left($data, $myuser);
+            if(is_array($messages_list)){
+                $messages_list = array_reverse($messages_list);
+                foreach($messages_list as $data){
+                    $myuser = $DB->get_user($data->sender);
+
+                    if($data->receiver == $_SESSION['userid'] && $data->received == 0){
+                        $new_message = true;
+                    }
+                    if($data->receiver == $_SESSION['userid'] && $data->received == 1 && $seen){
+                        $DB->write("update messages set seen = 1 where id = '$data->id' limit 1");
+                    }
+                    if($data->receiver == $_SESSION['userid']){
+                        $DB->write("update messages set received = 1 where id = '$data->id' limit 1");
+                    }
+                    if($_SESSION['userid'] == $data->sender){
+                        $messages .= message_right($data, $myuser);
+                    } else {
+                        $messages .= message_left($data, $myuser);
+                    }
                 }
             }
-        }
 
         if(!$refresh){
             $messages .= message_controls();
-            $messages .= "</div></div>";
         }
 
-        // Only add chat header on first load
-        if(!$refresh){
-            $image = file_exists($row->image) ? $row->image : "./images/default.png";
 
-            $mydata = "
-            Now Chatting with:<br>
-            <div id='active_contact' userid='{$row->userid}'>
-                <img src='$image'><br>
-                $row->username
-            </div>";
-        }
-
-        $info->user = $refresh ? "" : $mydata;
+        $info->user = $mydata;
         $info->message = $messages;
-        $info->data_type = $refresh ? "chats_refresh" : "chats";
-
+        $info->data_type = "chats";
+        if($refresh){
+            $info->data_type = "chats_refresh";
+            $info->new_message = $new_message;
+        }
         echo json_encode($info);
-        exit;
 
     } else {
     
         $a['userid'] = $_SESSION['userid'];
-
         // Get last message per conversation
-        $sql = "
-            SELECT * FROM messages 
-            WHERE id IN (
-                SELECT MAX(id) 
-                FROM messages 
+        $sql = "SELECT * FROM messages WHERE id IN (
+                SELECT MAX(id) FROM messages 
                 WHERE sender = :userid OR receiver = :userid
                 GROUP BY CASE 
-                            WHEN sender = :userid THEN receiver 
-                            ELSE sender 
+                        WHEN sender = :userid THEN receiver 
+                        ELSE sender 
                         END
-            ) 
-            ORDER BY id DESC
-        ";
-        $result2 = $DB->read($sql, $a);
+            ) ORDER BY id DESC";
 
+        $result2 = $DB->read($sql, $a);
         $mydata = "Previews Chats:<br>";
 
         if(is_array($result2)){
@@ -112,7 +113,7 @@
                 // determine the other user in conversation
                 $other_user_id = ($data->sender == $_SESSION['userid']) ? $data->receiver : $data->sender;
                 $myuser = $DB->get_user($other_user_id);
-                
+
                 // default image if missing
                 $image = ($myuser->gender == "Female") 
                             ? "./images/33988c20a002ec982dc72e8b184152c5.jpg" 
@@ -132,13 +133,17 @@
             }
         }
 
+    /*
         $info->user = $mydata;
         $info->message = "<div id='message_holder_parent'><div id='message_holder' style='height:90%; overflow-y:auto;'></div></div>";
         $info->data_type = $refresh ? "chats_refresh" : "chats";
         $info->new_message = $new_message;
+    */
+        $info->user = $mydata;
+        $info->message = $messages;
+        $info->data_type = "chats";
 
         echo json_encode($info);
-        exit;
 }
 
 
