@@ -24,21 +24,43 @@
 
     <div style="text-align:center; animation: appear 1s ease;">';
         if(is_array($myusers)){
+            $messages = array();
+            $me = $_SESSION['userid'];
+            $query = "select * from messages where receiver = '$me' && received = 0";
+            $mymgs = $DB->read($query,[]);
+            
+            if(is_array($mymgs)){
+                foreach($mymgs as $row2){
+                    $sender = $row2->sender;
+                    if(isset($messages[$sender])){
+                        $messages[$sender]++;
+                    } else {
+                        $messages[$sender] = 1;
+                    }
+                } 
+            }
 
             foreach($myusers as $row){
                 $image = ($row->gender == "Female") ? "./images/33988c20a002ec982dc72e8b184152c5.jpg" : "./images/euEsSe1jDmT59aqetVq2hLuD.jpeg";
                 if(file_exists($row->image)){
                     $image = $row->image;
                 }
+           
                 $mydata .= "   
-                <div id='contact' userid='$row->userid' onclick='start_chat(event)'>
+                <div id='contact' userid='$row->userid' onclick='start_chat(event)' style='position: relative;'>
                     <img src='$image'>
-                    $row->username
-                </div>";
+                    <br>$row->username";
+                    if(count($messages) > 0 && isset($messages[$row->userid])){
+                        $mydata .= "<div style='width:20px; height: 20px; border-radius: 50%; background-color: orange; color: white; position: absolute; left: 0px; top: 0px;'> 
+                                        ".$messages[$row->userid]."
+                                    </div>";
+                    }
+            
+                $mydata .= "</div>";
             }
         }
-    $mydata .= '</div>';
-
+ 
+    
     # $result = $result[0];
     $info->message = $mydata;
     $info->data_type = "contacts";
