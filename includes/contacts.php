@@ -1,7 +1,7 @@
 <?php
 
     $myid = $_SESSION['userid'];
-    $sql = "SELECT * FROM users WHERE userid != :userid LIMIT 10"; 
+    $sql = "SELECT * FROM users WHERE userid != :userid"; 
     $myusers = $DB->read($sql, ['userid' => $myid]);
     //$myusers = $DB->read($sql,[]); old code
     $mydata =   

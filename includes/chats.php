@@ -79,6 +79,10 @@
             $messages .= message_controls();
         }
 
+        $messages .= "
+                </div>
+            </div>";
+
 
         $info->user = $mydata;
         $info->message = $messages;
