@@ -243,8 +243,21 @@
         position: absolute;
         width: 30%;
     }
-    
-    
+
+    .image_on{
+        position: absolute;
+        width: 500px;
+        height: 500px;
+        margin: auto;
+        z-index: 10;
+        top: 50px;
+        left: 50px;
+    }
+
+    .image_off{
+        display: none;
+    }
+
 </style>
 </head>
 <body>
@@ -272,6 +285,7 @@
         <div id="right_panel">
             <div id='header'>
                 <div id="loader_holder" class="loader_on"><img style="width: 70px;" src="ui/icons/giphy.gif" alt=""></div>
+                <div id="image_viewer" class = "image_off" onclick = "close_image(event)"></div>
                 Chat logs
             </div>
             <div id='container' style='display: flex;'>
@@ -571,95 +585,111 @@
     // auto-refresh for real-time chat
     setInterval(function(){
         var radio_chat = _("radio_chat");
+        var radio_contacts = _("radio_contacts");
+        
         // Only refresh if a chat is open
         if(CURRENT_CHAT_USER != "" && radio_chat.checked){
             get_data({userid:CURRENT_CHAT_USER,
                 seen:SEEN_STATUS
             }, "chats_refresh");
+
+            if(radio_contacts.checked){
+                get({}, "contacts");
+            }
         }
     }, 5000);
 
 </script>
 
 
-    <script type="text/javascript">
+<script type="text/javascript">
 
-        function collect_data(){
-            var save_settings_button = _("save_settings_button");
-            
-            save_settings_button.disabled = true;
-            save_settings_button.value = "Loading....";
-
-            var myform = _("myform")
-            //get input from form
-            var inputs = myform.getElementsByTagName("INPUT")
-
-            var data={};
-
-            //if each input has strokestroke, record it 
-            for(var i = inputs.length - 1; i >= 0; i--){
-                var key = inputs[i].name;
-
-                switch(key){
-                    case "username":
-                        data.username = inputs[i].value;
-                        break;
-                    case "email":
-                        data.email = inputs[i].value;
-                        break;
-                    case "gender":
-                        if(inputs[i].checked){
-                            data.gender = inputs[i].value;   
-                        }
-                        break;
-                    case "password":
-                        data.password = inputs[i].value;
-                        break;
-                    case "password2":
-                        data.password2 = inputs[i].value;
-                        break;
-                }
-            }
-
-            send_data(data, "save_settings");
-
-        }
-
-        //send data to backend
-        function send_data(data, type){
-            var xml = new XMLHttpRequest()
+    function collect_data(){
+        var save_settings_button = _("save_settings_button");
         
-            xml.onload = function(){
-                if(xml.readyState === 4 && xml.status === 200){
-                    handle_result(xml.responseText);
-                    save_settings_button.disabled = false;
-                    save_settings_button.value = "Save settings";
-                }
-        
+        save_settings_button.disabled = true;
+        save_settings_button.value = "Loading....";
+
+        var myform = _("myform")
+        //get input from form
+        var inputs = myform.getElementsByTagName("INPUT")
+        var data={};
+
+        //if each input has strokestroke, record it 
+        for(var i = inputs.length - 1; i >= 0; i--){
+            var key = inputs[i].name;
+
+            switch(key){
+                case "username":
+                    data.username = inputs[i].value;
+                    break;
+                case "email":
+                    data.email = inputs[i].value;
+                    break;
+                case "gender":
+                    if(inputs[i].checked){
+                        data.gender = inputs[i].value;   
+                    }
+                    break;
+                case "password":
+                    data.password = inputs[i].value;
+                    break;
+                case "password2":
+                    data.password2 = inputs[i].value;
+                    break;
             }
-            data.data_type = type;
-            //send data in json format
-            var data_string = JSON.stringify(data)
-            //send to middleware
-            xml.open("POST", "api.php", true);
-            xml.send(data_string);
-
-            //log data being send
-            console.log("Sending:", JSON.stringify(data));
-
         }
 
-        function start_chat(e){
-            var userid = e.target.getAttribute('userid');
-            if(!userid){ 
-                userid = e.target.parentNode.getAttribute("userid");
+        send_data(data, "save_settings");
+
+    }
+
+    //send data to backend
+    function send_data(data, type){
+        var xml = new XMLHttpRequest()
+    
+        xml.onload = function(){
+            if(xml.readyState === 4 && xml.status === 200){
+                handle_result(xml.responseText);
+                save_settings_button.disabled = false;
+                save_settings_button.value = "Save settings";
             }
+    
+        }
+        data.data_type = type;
+        //send data in json format
+        var data_string = JSON.stringify(data)
+        //send to middleware
+        xml.open("POST", "api.php", true);
+        xml.send(data_string);
 
-            CURRENT_CHAT_USER = userid;
-            var radio_chat = _("radio_chat");
-            radio_chat.checked = true;
+        //log data being send
+        console.log("Sending:", JSON.stringify(data));
 
-            get_data({userid: CURRENT_CHAT_USER}, "chats"); 
+    }
+
+    function start_chat(e){
+        var userid = e.target.getAttribute('userid');
+        if(!userid){ 
+            userid = e.target.parentNode.getAttribute("userid");
         }
 
-    </script>
+        CURRENT_CHAT_USER = userid;
+        var radio_chat = _("radio_chat");
+        radio_chat.checked = true;
+
+        get_data({userid: CURRENT_CHAT_USER}, "chats"); 
+    }
+
+    function close_image(e){
+        e.target.className = "image_off";
+    }
+    
+    function image_show(e){
+        var image = e.target.src;
+        var image_viewer = _("image_viewer");
+
+        image_viewer.innerHTML = "<img src= '"+image+"' style='width:100%'>";
+        image_viewer.className = "image_on";
+    }
+</script>

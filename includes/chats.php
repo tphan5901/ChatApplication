@@ -51,7 +51,7 @@
             // Fetch all messages between current user and selected contact
             $a['sender']   = $_SESSION['userid'];
             $a['receiver'] = $arr['userid'];
-            $sql = "SELECT * FROM messages WHERE (sender = :sender AND receiver = :receiver AND deleted_sender = 0) || (receiver = :sender AND sender = :receiver AND deleted_receiver = 0) ORDER BY id ASC";
+            $sql = "SELECT * FROM messages WHERE (sender = :sender AND receiver = :receiver AND deleted_sender = 0) || (receiver = :sender AND sender = :receiver AND deleted_receiver = 0) ORDER BY id DESC";
             $messages_list = $DB->read($sql, $a);
 
             if(is_array($messages_list)){
@@ -133,12 +133,6 @@
             }
         }
 
-    /*
-        $info->user = $mydata;
-        $info->message = "<div id='message_holder_parent'><div id='message_holder' style='height:90%; overflow-y:auto;'></div></div>";
-        $info->data_type = $refresh ? "chats_refresh" : "chats";
-        $info->new_message = $new_message;
-    */
         $info->user = $mydata;
         $info->message = $messages;
         $info->data_type = "chats";

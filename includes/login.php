@@ -1,7 +1,6 @@
 <?php 
 
   $info  = (Object)[];
-
   $data = [];
   $data['username'] = $data_object->username;
 //$data['password'] = $data_object->password;
