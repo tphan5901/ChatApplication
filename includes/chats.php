@@ -23,12 +23,11 @@
 
         //get first result
         $row = $result[0];
-
         $image = ($row->gender == "Female") 
                             ? "images/33988c20a002ec982dc72e8b184152c5.jpg" 
                             : "images/euEsSe1jDmT59aqetVq2hLuD.jpeg";
                             
-        $row->image = $image;
+        $image = $row->image;
         $mydata = "";
   
         $mydata = "
