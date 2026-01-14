@@ -14,7 +14,7 @@
   }
 
   if($Error == ""){
-        $query = "select * from users where username = :username limit 1";
+        $query = "SELECT * from users where username = :username limit 1";
         $result = $DB->read($query, $data);
 
     if(is_array($result)){

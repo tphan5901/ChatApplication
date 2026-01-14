@@ -1,10 +1,10 @@
 <?php
 
-    $sql = "select * from users where userid = :userid";
+    $sql = "SELECT * from users where userid = :userid";
     $id = $_SESSION['userid'];
     $data = $DB->read($sql,['userid'=>$id]);
 
-    $mydata = "";
+    $htmlComponent = "";
     if(is_array($data)){
         $data = $data[0];
 
@@ -23,7 +23,7 @@
         $gender_female = "checked";
     }
 
-    $mydata = '
+    $htmlComponent = '
    
     <style type="text/css">
 
@@ -105,7 +105,7 @@
     </body>
     </html> ';
 
-    $info->message = $mydata;
+    $info->message = $htmlComponent;
     $info->data_type = "contacts";
     echo json_encode($info);
 

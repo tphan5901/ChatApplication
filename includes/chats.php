@@ -1,6 +1,6 @@
 <?php
     $arr['userid'] = "null";
-    $mydata = "";
+    $htmlComponent = "";
     $messages = "";
     $new_message = false;
     // Get the target user if passed
@@ -28,9 +28,9 @@
                             : "images/euEsSe1jDmT59aqetVq2hLuD.jpeg";
                             
         $image = $row->image;
-        $mydata = "";
+        $htmlComponent = "";
   
-        $mydata = "
+        $htmlComponent = "
             Now Chatting with:<br>
             <div id='active_contact' userid='{$row->userid}'>
                 <img src='$image'><br>
@@ -62,10 +62,10 @@
                         $new_message = true;
                     }
                     if($data->receiver == $_SESSION['userid'] && $data->received == 1 && $seen){
-                        $DB->write("update messages set seen = 1 where id = '$data->id' limit 1");
+                        $DB->write("UPDATE messages set seen = 1 where id = '$data->id' limit 1");
                     }
                     if($data->receiver == $_SESSION['userid']){
-                        $DB->write("update messages set received = 1 where id = '$data->id' limit 1");
+                        $DB->write("UPDATE messages set received = 1 where id = '$data->id' limit 1");
                     }
                     if($_SESSION['userid'] == $data->sender){
                         $messages .= message_right($data, $myuser);
@@ -84,7 +84,7 @@
             </div>";
 
 
-        $info->user = $mydata;
+        $info->user = $htmlComponent;
         $info->message = $messages;
         $info->data_type = "chats";
         if($refresh){
@@ -100,14 +100,11 @@
         $sql = "SELECT * FROM messages WHERE id IN (
                 SELECT MAX(id) FROM messages 
                 WHERE sender = :userid OR receiver = :userid
-                GROUP BY CASE 
-                        WHEN sender = :userid THEN receiver 
-                        ELSE sender 
-                        END
-            ) ORDER BY id DESC";
+                GROUP BY CASE WHEN sender = :userid THEN receiver 
+                ELSE sender END) ORDER BY id DESC";
 
         $result2 = $DB->read($sql, $a);
-        $mydata = "Previews Chats:<br>";
+        $htmlComponent = "Previews Chats:<br>";
 
         if(is_array($result2)){
             $added_users = [];
@@ -128,7 +125,7 @@
 
                 $message_preview = htmlspecialchars($data->message ?? ''); // sanitize
 
-                $mydata .= "
+                $htmlComponent .= "
                     <div id='active_contact' userid='{$myuser->userid}' onclick='start_chat(event)' style='cursor:pointer;'>
                         <img src='{$image}'> {$myuser->username} <br>
                         <span style='font-size:11px;'>{$message_preview}</span>
@@ -136,7 +133,7 @@
             }
         }
 
-        $info->user = $mydata;
+        $info->user = $htmlComponent;
         $info->message = $messages;
         $info->data_type = "chats";
 

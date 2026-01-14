@@ -41,7 +41,7 @@
         }
         $row->image = $image;
 
-        $mydata = "Now Chatting with: <br>  
+        $htmlComponent = "Now Chatting with: <br>  
                 <div id='active_contact'>
                     <img src='$image'>
                     <br>$row->username
@@ -70,7 +70,7 @@
 
         $messages .= message_controls();
 
-        $info->user = $mydata;
+        $info->user = $htmlComponent;
         $info->message = $messages;
         $info->data_type = "send_message";
         echo json_encode($info);

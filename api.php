@@ -85,13 +85,10 @@ function message_left($data, $row){
             if($data->files != "" && file_exists($data->files)){
                 $a .= "<img src = '$data->files' style='width: 100%; cursor: pointer;' onclick = 'image_show(event)'/> <br>";
             }
+               
+    $a .= "</div>";
 
-          
-            $a .= "<span style='font-size: 10px; color: black;'>{$data->date}</span>
-            <img id='trash' src = 'ui/icons/trash.png' onclick='delete_message(event)' msgid='$data->id' />
-        </div>";
-
-        return $a;
+    return $a;
 }
 
 function message_right($data, $row){
@@ -135,13 +132,13 @@ function message_controls(){
     return "
         </div>
         <span onclick='delete_thread(event)' style='color:white; cursor: pointer;'> Delete this thread </span>
-        <div style='display:flex; width:100%; height:40px;'>
-            <label for='message_file'>
-                <img src='ui/icons/clip.png' style='width:30px; background-color:white; margin:5px; cursor:pointer; opacity:0.8;'>
-            </label>
-            <input id='message_file' type='file' name='file' style='display:none;' onchange='send_image(this.files)'/>
-            <input id='message_text' onkeyup='enter_pressed(event)' type='text' style='flex:6; border:solid thin #ccc; padding: 5px; font-size:14px;' placeholder='Type your message'/>
-            <input type='button' onclick='send_message(event)' style='flex:1; cursor:pointer; background-color:#1ac963ff; border-radius: 5px; color:white;' value='Send'/>
+            <div style='display:flex; width:100%; height:40px;'>
+                <label for='message_file'>
+                    <img src='ui/icons/clip.png' style='width:30px; background-color:white; margin:5px; cursor:pointer; opacity:0.8;'>
+                </label>
+                <input id='message_file' type='file' name='file' style='display:none;' onchange='send_image(this.files)'/>
+                <input id='message_text' onkeyup='enter_pressed(event)' type='text' style='flex:6; border:solid thin #ccc; padding: 5px; font-size:14px;' placeholder='Type your message'/>
+                <input type='button' onclick='send_message(event)' style='flex:1; cursor:pointer; background-color:#1ac963ff; border-radius: 5px; color:white;' value='Send'/>
             </div>
         </div> ";
 

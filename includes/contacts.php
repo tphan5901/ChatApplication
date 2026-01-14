@@ -1,14 +1,14 @@
 <?php
 
-    $myid = $_SESSION['userid'];
+    $userid = $_SESSION['userid'];
     $sql = "SELECT * FROM users WHERE userid != :userid"; 
-    $myusers = $DB->read($sql, ['userid' => $myid]);
-    //$myusers = $DB->read($sql,[]); old code
-    $mydata =   
+    $users = $DB->read($sql, ['userid' => $userid]);
+    //$users = $DB->read($sql,[]); old code
+    $htmlComponent =   
     '
     <style>
         @keyframes appear{
-            0%{opacity:0; transform: translateY(50px);}
+            0%{opacity:0; transform: translateY(50px);} 
             100%{opacity:1; transform: translateY(0px);}
         }
 
@@ -23,46 +23,45 @@
     </style>
 
     <div style="text-align:center; animation: appear 1s ease;">';
-        if(is_array($myusers)){
-            $messages = array();
-            $me = $_SESSION['userid'];
-            $query = "select * from messages where receiver = '$me' && received = 0";
-            $mymgs = $DB->read($query,[]);
+        if(is_array($users)){
+            $messagesArr = array();
+            $query = "SELECT * from messages where receiver = '$userid' && received = 0";
+            $messages = $DB->read($query,[]);
             
-            if(is_array($mymgs)){
-                foreach($mymgs as $row2){
+            if(is_array($messages)){
+                foreach($messages as $row2){
                     $sender = $row2->sender;
-                    if(isset($messages[$sender])){
-                        $messages[$sender]++;
+                    if(isset($messagesArr[$sender])){
+                        $messagesArr[$sender]++;
                     } else {
-                        $messages[$sender] = 1;
+                        $messagesArr[$sender] = 1;
                     }
                 } 
             }
 
-            foreach($myusers as $row){
+            foreach($users as $row){
                 $image = ($row->gender == "Female") ? "./images/33988c20a002ec982dc72e8b184152c5.jpg" : "./images/euEsSe1jDmT59aqetVq2hLuD.jpeg";
                 if(file_exists($row->image)){
                     $image = $row->image;
                 }
            
-                $mydata .= "   
+                $htmlComponent .= "   
                 <div id='contact' userid='$row->userid' onclick='start_chat(event)' style='position: relative;'>
                     <img src='$image'>
                     <br>$row->username";
-                    if(count($messages) > 0 && isset($messages[$row->userid])){
-                        $mydata .= "<div style='width:20px; height: 20px; border-radius: 50%; background-color: orange; color: white; position: absolute; left: 0px; top: 0px;'> 
-                                        ".$messages[$row->userid]."
-                                    </div>";
+                    if(count($messagesArr) > 0 && isset($messagesArr[$row->userid])){
+                        $htmlComponent .= "<div style='width:20px; height: 20px; border-radius: 50%; background-color: orange; color: white; position: absolute; left: 0px; top: 0px;'> 
+                                            ".$messagesArr[$row->userid]."
+                                           </div>";
                     }
             
-                $mydata .= "</div>";
+                $htmlComponent .= "</div>";
             }
         }
  
     
     # $result = $result[0];
-    $info->message = $mydata;
+    $info->message = $htmlComponent;
     $info->data_type = "contacts";
     echo json_encode($info);
 

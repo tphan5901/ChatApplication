@@ -49,7 +49,7 @@ if(isset($_FILES['file']) && $_FILES['file']['name'] != ""){
 if($data_type == "change_profile_image"){
     if($destination != ""){
         $id = $_SESSION['userid'];
-        $query = "update users set image = '$destination' where userid = '$id' limit 1";
+        $query = "UPDATE users set image = '$destination' where userid = '$id' limit 1";
         $DB->write($query, []);
     }
 
@@ -81,8 +81,6 @@ if($data_type == "change_profile_image"){
     ]);
     exit;
 }
-
-
 
 // random string generator
 function get_random_string_max($length){

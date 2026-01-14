@@ -1,5 +1,4 @@
 <?php 
-
     $info  = (Object)[];
 
     $data = [];
@@ -68,7 +67,7 @@
     $data['date'] = date("Y-m-d H:i:s");
 
     if($Error == ""){
-        $query = "insert into users (userid,username,gender,email,password,date) values (:userid,:username,:gender,:email,:password,:date)";
+        $query = "INSERT into users (userid,username,gender,email,password,date) values (:userid,:username,:gender,:email,:password,:date)";
         $result = $DB->write($query, $data);
 
         if($result){

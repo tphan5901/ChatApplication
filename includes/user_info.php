@@ -1,5 +1,4 @@
 <?php 
-
     //retrieve userinfo to display on index.php
     $info  = (Object)[];
 
@@ -7,7 +6,7 @@
     $data['userid'] = $_SESSION['userid'];
 
     if($Error == ""){
-        $query = "select * from users where userid = :userid";
+        $query = "SELECT * from users where userid = :userid";
         $result = $DB->read($query, $data);
 
         if(is_array($result)){

@@ -645,7 +645,7 @@
     }
 
     //send data to backend
-    function send_data(data, type){
+    function send_data(data, type){ 
         var xml = new XMLHttpRequest()
     
         xml.onload = function(){

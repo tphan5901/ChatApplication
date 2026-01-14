@@ -134,7 +134,6 @@
 
     }
 
-
     function send_data(data, type){
         var xml = new XMLHttpRequest()
 
